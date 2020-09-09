@@ -25,8 +25,10 @@ function toAlfred(teamId, team, channel) {
     }
 }
 
-const items = json.flatMap(
+const teams = json.map(account => toAlfred(account.teamId, account.team, {name: "Team " + account.team, id: ""}))
+
+const channels = json.flatMap(
     account => account.channels.map(channel => toAlfred(account.teamId, account.team, channel))
 )
 
-console.log(JSON.stringify({items}))
+console.log(JSON.stringify({items: [...channels, ...teams]}))
