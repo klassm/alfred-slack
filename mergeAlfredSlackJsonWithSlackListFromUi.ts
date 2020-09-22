@@ -1,15 +1,21 @@
 import { config } from "dotenv";
-import {homedir} from "os"
 import fs from "fs";
+import { groupBy, uniqBy } from "lodash";
+import { homedir } from "os"
 import process from "process";
-import {groupBy, mapValues, sortedUniqBy} from "lodash";
 
-const listResponse = {"next_marker":"","results":[],"ok":true}
-
+// Obtain it from https://api.slack.com/methods/users.list/test and from https://api.slack.com/methods/conversations.list/test
+// You can retrieve a token from a list request in the normal Slack web UI. Just steal a token from some request.
+// Make sure to still be logged in to Slack when you test the API methods - this only works while you
+// are still logged in to Slack.
+const listResponse = {} as any
 
 interface HasIdAndName {
   name: string;
   id: string;
+}
+interface HasIdAndNameAndTeam extends HasIdAndName {
+  teamId: string;
 }
 
 config();
@@ -22,22 +28,36 @@ if (!fs.existsSync(filePath)) {
 
 const json = JSON.parse(fs.readFileSync(filePath).toString());
 
-const groupedByTeams = groupBy(listResponse.results, (result: any) => result.team_id);
-const mappedTeams = mapValues(groupedByTeams, users => users.map((user: any) => ({
-    name: "@" + user.real_name,
-    id: user.id
-  }))
-)
+function getValuesToMap(response: any): HasIdAndNameAndTeam[] {
+  if (response.channels) {
+    return response.channels.map((channel: any) => ({
+      name: "#" + channel.name,
+      id: channel.id,
+      teamId: channel.shared_team_ids && channel.shared_team_ids[0]
+    }))
+  }
+
+  if (response.members) {
+    return response.members.map((user: any) => ({
+      name: "@" + user.real_name,
+      id: user.id,
+      teamId: user.team_id
+    }))
+  }
+
+  throw new Error("Don't know how to handle this response");
+}
 
 function mergeChannels(teamChannels: HasIdAndName[], newChannels: HasIdAndName[]): HasIdAndName[] {
   const channels = [...teamChannels, ...newChannels];
-  return sortedUniqBy(channels, channel => channel.id);
+  return uniqBy(channels, channel => channel.id);
 }
+
+const groupedByTeams = groupBy(getValuesToMap(listResponse), (result: any) => result.teamId);
 
 const result = json.map((team: any) => ({
   ...team,
-  channels: mergeChannels(team.channels, mappedTeams[team.teamId] || [])
+  channels: mergeChannels(team.channels, groupedByTeams[team.teamId] || [])
 }))
-
 
 console.log(JSON.stringify(result));
