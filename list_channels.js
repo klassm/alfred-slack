@@ -5,7 +5,10 @@ const fs = require("fs");
 const process = require("process");
 const homedir = require('os').homedir();
 
-const filePath = `${homedir}/.alfred-slack.json`;
+const xdgConfigHome = process.env.XDG_CONFIG_HOME;
+const baseDir = xdgConfigHome ?? homedir;
+const filePath = `${baseDir}/.alfred-slack.json`;
+
 if (!fs.existsSync(filePath)) {
     console.log(filePath + " does not exist")
     process.exit(1);
