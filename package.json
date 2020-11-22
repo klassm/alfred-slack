@@ -4,7 +4,8 @@
   "description": "Alfred Slack",
   "scripts": {
     "generateAlfredSlackJson": "ts-node ./generateAlfredSlackJsonFromApi.ts",
-    "mergeAlfredSlackJsonWithSlackListFromUi": "ts-node ./mergeAlfredSlackJsonWithSlackListFromUi.ts"
+    "mergeAlfredSlackJsonWithSlackListFromUi": "ts-node ./mergeAlfredSlackJsonWithSlackListFromUi.ts",
+    "alfredPackage": "rm -f zip alfred_slack.alfredworkflow && zip alfred_slack.alfredworkflow ./* -x@alfred_package.ignore"
   },
   "repository": {
     "type": "git",
