@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Build with Gradle
+      - name: Package
         run: npm ci && npm run alfredPackage
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v1
