@@ -6,7 +6,7 @@ Workflow to open Slack channels and contacts without having to obtain an OAuth t
 The plugin uses [Slack Deep Linking](https://api.slack.com/reference/deep-linking#open_a_channel). 
 
 ### Installation
-1. Download the Workflow ([alfred_slack.alfredworkflow](alfred_slack.alfredworkflow))
+1. Download the Workflow ([alfred_slack.alfredworkflow](https://nightly.link/klassm/alfred-slack/workflows/package/master/alfred_slack.alfredworkflow.zip))
 2. Double click to install
 3. Create a `.alfred-slack.json` in your user home directory.
 
