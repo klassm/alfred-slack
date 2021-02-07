@@ -1,4 +1,5 @@
 import { config } from "dotenv";
+import * as fs from "fs";
 import { groupBy} from "lodash";
 import { mergeChannels, SlackChannel } from "./types/SlackChannel";
 import { provideAlfredSlackJson, writeAlfredSlackJson } from "./utils/alfredSlackJson";
@@ -7,8 +8,7 @@ import { provideAlfredSlackJson, writeAlfredSlackJson } from "./utils/alfredSlac
 // You can retrieve a token from a list request in the normal Slack web UI. Just steal a token from some request.
 // Make sure to still be logged in to Slack when you test the API methods - this only works while you
 // are still logged in to Slack.
-const listResponse = {} as any
-
+const listResponse = fs.readFileSync("list-response.json");
 
 config();
 
