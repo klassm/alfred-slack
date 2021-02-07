@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "Alfred Slack",
   "scripts": {
-    "generateAlfredSlackJson": "ts-node ./generateAlfredSlackJsonFromApi.ts",
-    "mergeAlfredSlackJsonWithSlackListFromUi": "ts-node ./mergeAlfredSlackJsonWithSlackListFromUi.ts",
-    "alfredPackage": "rm -f zip alfred_slack.alfredworkflow && zip alfred_slack.alfredworkflow ./* -x@alfred_package.ignore"
+    "mergeAlfredSlackJsonWithSlackListFromApiTester": "ts-node ./alfredSlackJson/mergeAlfredSlackJsonWithSlackListFromApiTester.ts",
+    "mergeAlfredSlackJsonChannelInfoFromHtml": "ts-node ./alfredSlackJson/mergeAlfredSlackJsonChannelInfoFromHtml.ts",
+    "alfredPackage": "rm -f zip alfred_slack.alfredworkflow && zip alfred_slack.alfredworkflow ./* -x@alfred_package.ignore",
+    "alfredLink": "rm -f ~/Library/Application\\ Support/Alfred/Alfred.alfredpreferences/workflows/user.workflow.alfred-slack && ln -s ${PWD} ~/Library/Application\\ Support/Alfred/Alfred.alfredpreferences/workflows/user.workflow.alfred-slack"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,7 @@
   },
   "dependencies": {
     "axios": "^0.20.0",
-    "lodash": "^4.17.20"
+    "lodash": "^4.17.20",
+    "node-html-parser": "^2.1.0"
   }
 }
