@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env node
 
 /**
  * Script to update your .alfred-slack.json with data from the content of the Slack webpage.
