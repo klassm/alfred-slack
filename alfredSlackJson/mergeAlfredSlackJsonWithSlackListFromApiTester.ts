@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 import * as fs from "fs";
-import { groupBy} from "lodash";
+import { groupBy } from "lodash";
 import { mergeChannels, SlackChannel } from "./types/SlackChannel";
 import { provideAlfredSlackJson, writeAlfredSlackJson } from "./utils/alfredSlackJson";
 
@@ -8,7 +8,7 @@ import { provideAlfredSlackJson, writeAlfredSlackJson } from "./utils/alfredSlac
 // You can retrieve a token from a list request in the normal Slack web UI. Just steal a token from some request.
 // Make sure to still be logged in to Slack when you test the API methods - this only works while you
 // are still logged in to Slack.
-const listResponse = fs.readFileSync("list-response.json");
+const listResponse = JSON.parse(fs.readFileSync("list-response.json").toString('utf-8'));
 
 config();
 
@@ -16,19 +16,21 @@ const json = provideAlfredSlackJson();
 
 function getValuesToMap(response: any): SlackChannel[] {
   if (response.channels) {
-    return response.channels.map((channel: any) => ({
+    return response.channels.map((channel: any) => ( {
       name: "#" + channel.name,
       id: channel.id,
       teamId: channel.shared_team_ids && channel.shared_team_ids[0]
-    }))
+    } ))
   }
 
   if (response.members) {
-    return response.members.map((user: any) => ({
-      name: "@" + user.real_name,
-      id: user.id,
-      teamId: user.team_id
-    }))
+    return response.members
+      .filter((user: any) => user.real_name)
+      .map((user: any) => ( {
+        name: "@" + user.real_name,
+        id: user.id,
+        teamId: user.team_id
+      } ))
   }
 
   throw new Error("Don't know how to handle this response");
@@ -36,10 +38,10 @@ function getValuesToMap(response: any): SlackChannel[] {
 
 const groupedByTeams = groupBy(getValuesToMap(listResponse), (result: any) => result.teamId);
 
-const result = json.map((team: any) => ({
+const result = json.map((team: any) => ( {
   ...team,
   channels: mergeChannels(team.channels, groupedByTeams[team.teamId] || [])
-}))
+} ))
 
 console.log(JSON.stringify(result));
 writeAlfredSlackJson(result);
